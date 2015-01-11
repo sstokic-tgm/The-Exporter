@@ -16,7 +16,9 @@ public class ExporterStarter {
 		if(successfullyParsed) {
 
 			String sqlQuery = "SELECT " + cli.getCommaSeparatedList() + " FROM " + cli.getTableName();
-			if(!(cli.getFieldToSort().equals("")))
+			if(!cli.getWhereCondition().equals(""))
+				sqlQuery += " WHERE " + cli.getWhereCondition();
+			if(!cli.getFieldToSort().equals(""))
 				sqlQuery += " ORDER BY " + cli.getFieldToSort() + cli.getSortOrder();
 
 			ConnectionLogic conLog = new ConnectionLogic();
