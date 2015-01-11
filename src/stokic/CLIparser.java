@@ -13,8 +13,17 @@ public class CLIparser {
 	private String[] args;
 	private Options options;
 	
-	private String hostname, username, password, dbName, fieldToSort, sortOrder, whereCondition,
-					delimiter, commaSeparatedList, outFile, tableName;
+	private String hostname = "localhost",
+					username = System.getProperty("user.name"),
+					password = "",
+					dbName = null,
+					fieldToSort = "",
+					sortOrder = "ASC",
+					whereCondition = "",
+					delimiter = ";",
+					commaSeparatedList = null,
+					outFile = null,
+					tableName = null;
 
 	public CLIparser(String[] args){
 
@@ -24,14 +33,17 @@ public class CLIparser {
 		Option hostname = OptionBuilder.withArgName("Hostname")
 				.hasArg()
 				.withDescription("Hostname des DBMS. Standard: localhost")
+				.isRequired(false)
 				.create("h");
 		Option username = OptionBuilder.withArgName("Benutzername")
 				.hasArg()
 				.withDescription("Benutzername. Standard: Benutzername des im Betriebssystem angemeldeten Benutzers")
+				.isRequired(false)
 				.create("u");
 		Option password = OptionBuilder.withArgName("Passwort")
-				.hasArg()
+				.hasArg(false)
 				.withDescription("Passwort. Standard: keins")
+				.isRequired(false)
 				.create("p");
 		Option dbName = OptionBuilder.withArgName("Datenbank Name")
 				.hasArg()
@@ -40,18 +52,22 @@ public class CLIparser {
 		Option fieldToSort = OptionBuilder.withArgName("Feld Name")
 				.hasArg()
 				.withDescription("Feld, nach dem sortiert werden soll (nur eines möglich, Standard: keines)")
+				.isRequired(false)
 				.create("s");
 		Option sortOrder = OptionBuilder.withArgName("Sortierrichtung")
 				.hasArg()
 				.withDescription("Sortierrichtung. Standard: ASC")
+				.isRequired(false)
 				.create("r");
 		Option whereCondition = OptionBuilder.withArgName("eine Bedingung")
 				.hasArg()
 				.withDescription("eine Bedingung in SQL-Syntax, die um Filtern der Tabelle verwendet wird. Standard: keine")
+				.isRequired(false)
 				.create("w");
 		Option delimiter = OptionBuilder.withArgName("Trennzeichen")
 				.hasArg()
 				.withDescription("Trennzeichen, dass für die Ausgabe verwendet werden soll. Standard: ;")
+				.isRequired(false)
 				.create("t");
 		Option commaSeparatedList = OptionBuilder.withArgName("Kommagetrennte Liste (ohne Leerzeichen)")
 				.hasArg()
@@ -60,6 +76,7 @@ public class CLIparser {
 		Option outFile = OptionBuilder.withArgName("Name der Ausgabedatei")
 				.hasArg()
 				.withDescription("Name der Ausgabedatei. Standard: keine -> Ausgabe auf der Konsole")
+				.isRequired(false)
 				.create("o");
 		Option tableName = OptionBuilder.withArgName("Tabellenname")
 				.hasArg()
@@ -84,7 +101,7 @@ public class CLIparser {
 	/**
 	 * Methode die die Argumente parst und wenn sie korrekt sind, wird Sekretariat ausgeführt
 	 */
-	public void parse(){
+	public boolean parse(){
 
 		GnuParser parser = new GnuParser();
 
@@ -102,23 +119,33 @@ public class CLIparser {
 				this.password = line.getOptionValue("p");
 				this.dbName = line.getOptionValue("d");
 				this.fieldToSort = line.getOptionValue("s");
-				this.sortOrder = line.getOptionValue("r");
+				
+				if(line.hasOption("r") && line.hasOption("s"))
+					this.sortOrder = line.getOptionValue("r");
+				
 				this.whereCondition = line.getOptionValue("w");
 				this.delimiter = line.getOptionValue("t");
 				this.commaSeparatedList = line.getOptionValue("f");
 				this.outFile = line.getOptionValue("o");
 				this.tableName = line.getOptionValue("T");
 				
+				return true;
 				
-			}else{
-
+			}else if(!line.hasOption("d") || !line.hasOption("f") || !line.hasOption("T")) {
+				
 				this.help();
+				
+				return false;
 			}
 
 		}catch(ParseException e){
 
 			this.help();
+			
+			return false;
 		}
+		
+		return false;
 	}
 
 	/**
