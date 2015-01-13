@@ -7,7 +7,7 @@ import java.util.regex.*;
 import javax.sql.*;
 
 /**
- * Diese Klasse implementiert die Connection Logik. Es wird also die Verbindung zur Datenbank verwaltet, ebenfalls wie das schließen der
+ * Diese Klasse implementiert die Connection Logik. Es wird also die Verbindung zur Datenbank verwaltet, ebenfalls wie das schliessen der
  * Verbindung zur Datenbank. Weiters verwaltet diese Klasse eine execute-Methode die den vom Benutzer eingegeben String bereitstellt und an die 
  * Datenbank absendet.
  * 
@@ -24,7 +24,7 @@ public class ConnectionLogic {
 	private boolean status = false;
 
 	/**
-	 * Diese Methode übernimmt die vom Benutzer angegebenen Connection-Parameter.
+	 * Diese Methode uebernimmt die vom Benutzer angegebenen Connection-Parameter.
 	 * @param host der Hostname
 	 * @param user der Username
 	 * @param pass das Password
@@ -47,7 +47,7 @@ public class ConnectionLogic {
 		ds = new MysqlDataSource();
 
 		ds.setServerName(getHost());
-		//ds.setPort(7188); // Für die Server2Go-Datenbank
+		//ds.setPort(7188); // Fuer die Server2Go-Datenbank
 		ds.setUser(getUser());
 		ds.setPassword(getPass());
 		ds.setDatabaseName(getDB());
@@ -96,7 +96,7 @@ public class ConnectionLogic {
 	}
 
 	/**
-	 * Der vom Benutzer eingegebener SQL Befehl wird an die Datenbank geschickt bzw. der vom Benutzer eingegebener SQL Befehl wird ausgeführt.
+	 * Der vom Benutzer eingegebener SQL Befehl wird an die Datenbank geschickt bzw. der vom Benutzer eingegebener SQL Befehl wird ausgefuehrt.
 	 * @param sql der SQL Befehl vom Benutzer
 	 * @return die Rückgabe des SQL Befehls
 	 */
@@ -116,7 +116,7 @@ public class ConnectionLogic {
 	}
 
 	/**
-	 * Getter-Methode für den Hostname
+	 * Getter-Methode fuer den Hostname
 	 * @return den Hostname
 	 */
 	public String getHost() {
@@ -125,7 +125,7 @@ public class ConnectionLogic {
 	}
 
 	/**
-	 * Getter-Methode für den Username
+	 * Getter-Methode fuer den Username
 	 * @return den Username
 	 */
 	public String getUser() {
@@ -134,7 +134,7 @@ public class ConnectionLogic {
 	}
 
 	/**
-	 * Getter-Methode für das Password
+	 * Getter-Methode fuer das Password
 	 * @return das Password
 	 */
 	public String getPass() {
@@ -143,7 +143,7 @@ public class ConnectionLogic {
 	}
 
 	/**
-	 * Getter-Methode für den Datenbanknamen
+	 * Getter-Methode fuer den Datenbanknamen
 	 * @return den Datenbanknamen
 	 */
 	public String getDB() {
@@ -152,7 +152,7 @@ public class ConnectionLogic {
 	}
 
 	/**
-	 * Getter-Methode für den jeweiligen Connection-Status der Datenbank
+	 * Getter-Methode fuer den jeweiligen Connection-Status der Datenbank
 	 * @return den derzeitigen Connection-Status mit der Datenbank (falls verbunden true, wenn nicht false)
 	 */
 	public boolean getStatus() {
