@@ -12,18 +12,20 @@ public class CLIparser {
 
 	private String[] args;
 	private Options options;
-	
+
 	private String hostname = "localhost",
-					username = System.getProperty("user.name"),
-					password = "",
-					dbName = null,
-					fieldToSort = "",
-					sortOrder = "ASC",
-					whereCondition = "",
-					delimiter = ";",
-					commaSeparatedList = null,
-					outFile = null,
-					tableName = null;
+			username = System.getProperty("user.name"),
+			password = "",
+			dbName = null,
+			fieldToSort = "",
+			sortOrder = "ASC",
+			whereCondition = "",
+			delimiter = ";",
+			commaSeparatedList = null,
+			outFile = null,
+			tableName = null;
+
+	private boolean enoughArgs = true;
 
 	public CLIparser(String[] args){
 
@@ -82,7 +84,7 @@ public class CLIparser {
 				.hasArg()
 				.withDescription("Tabellenname (Pflicht)")
 				.create("T");
-		
+
 
 		this.options.addOption(hostname);
 		this.options.addOption(username);
@@ -99,9 +101,9 @@ public class CLIparser {
 	}
 
 	/**
-	 * Methode die die Argumente parst und wenn sie korrekt sind, wird Sekretariat ausgeführt
+	 * Methode die die Argumente parst
 	 */
-	public boolean parse(){
+	public void parse(){
 
 		GnuParser parser = new GnuParser();
 
@@ -109,43 +111,65 @@ public class CLIparser {
 
 			CommandLine line = parser.parse(this.options, this.args);
 
-			if(line.hasOption("h") && line.hasOption("u") && line.hasOption("p") && line.hasOption("d") &&
-					line.hasOption("s") && line.hasOption("r") && line.hasOption("w") &&
-					line.hasOption("t") && line.hasOption("f") && line.hasOption("o") &&
-					line.hasOption("T")){
-				
+			if(line.hasOption("h"))
 				this.hostname = line.getOptionValue("h");
+
+			if(line.hasOption("u"))
 				this.username = line.getOptionValue("u");
+
+			if(line.hasOption("p"))
 				this.password = line.getOptionValue("p");
+
+			if(line.hasOption("d")) {
+				
 				this.dbName = line.getOptionValue("d");
-				this.fieldToSort = line.getOptionValue("s");
 				
-				if(line.hasOption("r") && line.hasOption("s"))
-					this.sortOrder = line.getOptionValue("r");
-				
-				this.whereCondition = line.getOptionValue("w");
-				this.delimiter = line.getOptionValue("t");
-				this.commaSeparatedList = line.getOptionValue("f");
-				this.outFile = line.getOptionValue("o");
-				this.tableName = line.getOptionValue("T");
-				
-				return true;
-				
-			}else if(!line.hasOption("d") || !line.hasOption("f") || !line.hasOption("T")) {
+			}else {
 				
 				this.help();
-				
-				return false;
+				enoughArgs = false;
 			}
+			
+			if(line.hasOption("s"))
+				this.fieldToSort = line.getOptionValue("s");
 
+			if(line.hasOption("r") && line.hasOption("s"))
+				this.sortOrder = line.getOptionValue("r");
+
+			if(line.hasOption("w"))
+				this.whereCondition = line.getOptionValue("w");
+
+			if(line.hasOption("t"))
+				this.delimiter = line.getOptionValue("t");
+
+			if(line.hasOption("f")) {
+				
+				this.commaSeparatedList = line.getOptionValue("f");
+				
+			}else{
+				
+				this.help();
+				enoughArgs = false;
+			}
+			
+			if(line.hasOption("o"))
+				this.outFile = line.getOptionValue("o");
+
+			if(line.hasOption("T")) {
+				
+				this.tableName = line.getOptionValue("T");
+				
+			}else{
+				
+				this.help();
+				enoughArgs = false;
+			}
+			
 		}catch(ParseException e){
 
 			this.help();
-			
-			return false;
+			enoughArgs = false;
 		}
-		
-		return false;
 	}
 
 	/**
@@ -157,63 +181,68 @@ public class CLIparser {
 		hf.printHelp("The Exporter", this.options);
 	}
 
+	public boolean getIsEnoughArgs() {
+
+		return enoughArgs;
+	}
+
 	public String getHostname() {
-		
+
 		return hostname;
 	}
 
 	public String getUsername() {
-		
+
 		return username;
 	}
 
 	public String getPassword() {
-		
+
 		return password;
 	}
 
 	public String getDbName() {
-		
+
 		return dbName;
 	}
 
 	public String getFieldToSort() {
-		
+
 		return fieldToSort;
 	}
 
 	public String getSortOrder() {
-		
+
 		return sortOrder;
 	}
 
 	public String getWhereCondition() {
-		
+
 		return whereCondition;
 	}
 
 	public String getDelimiter() {
-		
+
 		return delimiter;
 	}
 
 	public String getCommaSeparatedList() {
-		
+
 		return commaSeparatedList;
 	}
 
 	public String getOutFile() {
-		
+
 		return outFile;
 	}
 
 	public String getTableName() {
-		
+
 		return tableName;
 	}
-	
+
 	public String optionsToString() {
-		
+
 		return this.hostname + ";" + this.username + ";" + this.password + ";" + this.dbName + ";" + 
 				this.fieldToSort + ";" + this.sortOrder + ";" + this.whereCondition + ";" + this.delimiter +
 				";" + this.commaSeparatedList + ";" + this.outFile + ";" + this.tableName;
