@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<project name="ANT Bsp" default="create-doc" basedir=".">
+
+	
+	<property name="src.dir" value="src" />
+	<property name="doc.dir" value="doc" />
+	
+	<!-- Javadoc erstellen -->
+	<target name="create-doc" description="Create javadoc.">
+		<javadoc sourcepath="${src.dir}" destdir="${doc.dir}" />
+	</target>
+	
+	<!-- Javadoc loeschen -->
+	<target name="clean-doc" description="Delete javadoc.">
+		<delete dir="${doc.dir}"/>
+	</target>
+	
+</project>
