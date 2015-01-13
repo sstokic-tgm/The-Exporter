@@ -3,6 +3,13 @@ package stokic;
 import java.io.*;
 import java.sql.*;
 
+/**
+ * Mithilfe der uebergegebenen Argumente, wird eine Connection zur Datenbank erstellt, das SQL-Statement
+ * zusammengestellt und anschliessend ausgefuehrt.
+ * 
+ * @author Stokic Stefan
+ * @version 1.5
+ */
 public class ExporterStarter {
 
 	protected static boolean successfullyParsed = false;
@@ -11,13 +18,22 @@ public class ExporterStarter {
 	public static void main(String[] args) {
 
 		CLIparser cli = new CLIparser(args);
-		successfullyParsed = cli.parse();
+		cli.parse();
+		successfullyParsed = cli.getIsEnoughArgs();
 
 		if(successfullyParsed) {
 
-			String sqlQuery = "SELECT " + cli.getCommaSeparatedList() + " FROM " + cli.getTableName();
+			String sqlQuery = "";
+
+			if(cli.getCommaSeparatedList().equals("\\*") || cli.getCommaSeparatedList().equals(".classpath"))
+				sqlQuery = "SELECT " + "*" + " FROM " + cli.getTableName();
+			else
+				sqlQuery = "SELECT " + cli.getCommaSeparatedList() + " FROM " + cli.getTableName();
+
+
 			if(!cli.getWhereCondition().equals(""))
 				sqlQuery += " WHERE " + cli.getWhereCondition();
+
 			if(!cli.getFieldToSort().equals(""))
 				sqlQuery += " ORDER BY " + cli.getFieldToSort() + cli.getSortOrder();
 
@@ -36,6 +52,13 @@ public class ExporterStarter {
 						ResultSetMetaData rsmd = rs.getMetaData();
 
 						int columnCount = rsmd.getColumnCount();
+
+						for(int i = 1; i <= columnCount; i++) {
+
+							System.out.print(rsmd.getColumnName(i) + cli.getDelimiter());
+						}
+
+						System.out.println();
 
 						while(rs.next()) {
 
@@ -66,6 +89,13 @@ public class ExporterStarter {
 
 						int columnCount = rsmd.getColumnCount();
 
+						for(int i = 1; i <= columnCount; i++) {
+
+							fileWriter.print(rsmd.getColumnName(i) + cli.getDelimiter());
+						}
+
+						fileWriter.println();
+
 						while(rs.next()) {
 
 							for(int i = 1; i <= columnCount; i++) {
@@ -76,10 +106,10 @@ public class ExporterStarter {
 						}
 
 						fileWriter.close();
-						
+
 						rs.close();
 						rs = null;
-						
+
 						System.out.println(file.getAbsolutePath() + " successfully created!");
 
 					} catch(IOException ioe) {
@@ -92,6 +122,7 @@ public class ExporterStarter {
 					}	
 				}
 			}
+			conLog.disconnect();
 		}
 	}
 }
